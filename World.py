@@ -20,9 +20,10 @@ class World(object):
     def render(self, surface, pos):
         if self.prefab is None:
             self.prefab = pygame.Surface((self.map_w, self.map_h))
-            self.prefab.lock()
+            dark_surf = pygame.Surface((1, 1))
             for y in xrange(self.map_h):
                 for x in xrange(self.map_w):
+                    self.prefab.lock()
                     clr = self.map_array[x][y]
 
                     if clr < 160:
@@ -36,8 +37,10 @@ class World(object):
 
                     else:
                         self.prefab.set_at((x, y), (clr, clr, clr))
-
-            self.prefab.unlock()
+                    self.prefab.unlock()
+                    dark_surf.set_alpha(clr - 127)
+                    self.prefab.blit(dark_surf, (x, y))
+            
             pygame.image.save(self.prefab, "PrefabSave.png")
 
         surface.blit(self.prefab, pos)
